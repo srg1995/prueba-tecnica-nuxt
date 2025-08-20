@@ -15,7 +15,7 @@
         <img
           :src="photo"
           :alt="`Foto ${index}`"
-          width="400"
+          width="300"
           height="300"
           loading="lazy"
           class="w-full h-full object-cover rounded-lg transition-opacity duration-500"
@@ -32,19 +32,21 @@
 </template>
 
 <script setup>
-import { ref, watchEffect } from "vue";
-
 const { data: dataobjs } = await useAsyncData("photos", () =>
   $fetch("https://dog.ceo/api/breeds/image/random/50")
 );
 
 const loading = ref([]);
 
-watchEffect(() => {
-  if (dataobjs.value?.message) {
-    loading.value = dataobjs.value.message.map(() => true);
-  }
-});
+watch(
+  () => dataobjs.value?.message,
+  (newVal) => {
+    if (newVal) {
+      loading.value = newVal.map(() => true);
+    }
+  },
+  { immediate: true }
+);
 
 function handleLoad(index) {
   loading.value[index] = false;
