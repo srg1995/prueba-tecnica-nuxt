@@ -49,7 +49,9 @@ watch(
 );
 
 function handleLoad(index) {
-  loading.value[index] = false;
+  if (loading.value[index] !== undefined) {
+    loading.value[index] = false;
+  }
 }
 
 const deleteImage = (index) => {
