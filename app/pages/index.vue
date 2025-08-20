@@ -19,10 +19,6 @@
           height="300"
           loading="lazy"
           class="w-full h-full object-cover rounded-lg transition-opacity duration-500"
-          :class="{
-            'opacity-0': loading[index],
-            'opacity-100': !loading[index],
-          }"
           @load="handleLoad(index)"
         />
         <div
