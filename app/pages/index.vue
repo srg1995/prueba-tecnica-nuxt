@@ -13,6 +13,7 @@
         />
 
         <img
+          ref="imgs"
           :src="photo"
           :alt="`Foto ${index}`"
           width="300"
@@ -32,17 +33,30 @@
 </template>
 
 <script setup>
-onMounted(() => {
-  document.querySelectorAll("img").forEach((img, i) => {
-    if (img.complete) handleLoad(i);
-  });
-});
+// Data
+const imgs = ref([]);
+const loading = ref([]);
+// API calls with useAsyncData
 const { data: dataobjs } = await useAsyncData("photos", () =>
   $fetch("https://dog.ceo/api/breeds/image/random/50")
 );
 
-const loading = ref([]);
+// Methods
+const handleLoad = (index) => {
+  if (loading.value[index] !== undefined) {
+    loading.value[index] = false;
+  }
+};
 
+const deleteImage = (index) => {
+  console.log(`Eliminando imagen en el índice ${index}`);
+  dataobjs.value.message.splice(index, 1);
+  loading.value.splice(index, 1);
+  console.log(
+    `Imagen eliminada. Quedan ${dataobjs.value.message.length} imágenes.`
+  );
+};
+// Watchers
 watch(
   () => dataobjs.value?.message,
   (newVal) => {
@@ -53,18 +67,9 @@ watch(
   { immediate: true }
 );
 
-function handleLoad(index) {
-  if (loading.value[index] !== undefined) {
-    loading.value[index] = false;
-  }
-}
-
-const deleteImage = (index) => {
-  console.log(`Eliminando imagen en el índice ${index}`);
-  dataobjs.value.message.splice(index, 1);
-  loading.value.splice(index, 1);
-  console.log(
-    `Imagen eliminada. Quedan ${dataobjs.value.message.length} imágenes.`
-  );
-};
+onMounted(() => {
+  imgs.value.forEach((img, i) => {
+    if (img.complete) handleLoad(i);
+  });
+});
 </script>
