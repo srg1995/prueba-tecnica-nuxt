@@ -11,6 +11,9 @@ export default defineNuxtConfig({
     "@nuxt/test-utils",
     "@nuxt/ui",
   ],
+  content: {
+    database: false, // ⚡ modo filesystem, Vercel friendly
+  },
   css: ["~/assets/css/main.css"],
   image: {
     domains: ["images.dog.ceo"],
