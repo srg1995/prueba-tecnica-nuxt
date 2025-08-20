@@ -4,16 +4,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   modules: [
-    "@nuxt/content",
     "@nuxt/eslint",
     "@nuxt/image",
     "@nuxt/scripts",
     "@nuxt/test-utils",
     "@nuxt/ui",
   ],
-  content: {
-    database: false, // ⚡ modo filesystem, Vercel friendly
-  },
   css: ["~/assets/css/main.css"],
   image: {
     domains: ["images.dog.ceo"],
