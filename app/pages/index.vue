@@ -35,23 +35,20 @@
 const { data: dataobjs } = await useAsyncData("photos", () =>
   $fetch("https://dog.ceo/api/breeds/image/random/50")
 );
-
-const loading = ref([]);
+const loading = ref({});
 
 watch(
   () => dataobjs.value?.message,
-  (newVal) => {
-    if (newVal) {
-      loading.value = newVal.map(() => true);
+  (photos) => {
+    if (photos) {
+      loading.value = Object.fromEntries(photos.map((p, i) => [i, true]));
     }
   },
   { immediate: true }
 );
 
 function handleLoad(index) {
-  if (loading.value[index] !== undefined) {
-    loading.value[index] = false;
-  }
+  loading.value[index] = false;
 }
 
 const deleteImage = (index) => {
