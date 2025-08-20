@@ -32,23 +32,31 @@
 </template>
 
 <script setup>
+onMounted(() => {
+  document.querySelectorAll("img").forEach((img, i) => {
+    if (img.complete) handleLoad(i);
+  });
+});
 const { data: dataobjs } = await useAsyncData("photos", () =>
   $fetch("https://dog.ceo/api/breeds/image/random/50")
 );
-const loading = ref({});
+
+const loading = ref([]);
 
 watch(
   () => dataobjs.value?.message,
-  (photos) => {
-    if (photos) {
-      loading.value = Object.fromEntries(photos.map((p, i) => [i, true]));
+  (newVal) => {
+    if (newVal) {
+      loading.value = newVal.map(() => true);
     }
   },
   { immediate: true }
 );
 
 function handleLoad(index) {
-  loading.value[index] = false;
+  if (loading.value[index] !== undefined) {
+    loading.value[index] = false;
+  }
 }
 
 const deleteImage = (index) => {
