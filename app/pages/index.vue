@@ -1,62 +1,37 @@
 <template>
-  <div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
-      <div
-        v-for="(photo, index) in dataobjs?.message"
-        :key="photo"
-        class="aspect-[4/3] relative group cursor-pointer"
-        @click="deleteImage(index)"
-      >
-        <USkeleton
-          v-if="loading[index]"
-          class="absolute inset-0 w-full h-full rounded-lg"
-        />
-
-        <img
-          ref="imgs"
-          :src="photo"
-          :alt="`Foto ${index}`"
-          width="300"
-          height="300"
-          loading="lazy"
-          class="w-full h-full object-cover rounded-lg transition-opacity duration-500"
-          @load="handleLoad(index)"
-        />
-        <div
-          class="absolute flex justify-center items-center inset-0 bg-red-500 opacity-0 transition-opacity duration-300 rounded-lg group-hover:opacity-50"
-        >
-          <UIcon name="i-lucide-trash" class="size-10" />
-        </div>
-      </div>
-    </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 p-4">
+    <Card
+      v-for="(photo, index) in dataobjs?.message"
+      :key="photo"
+      :src="photo"
+      :index="index"
+      :is-loading="loading[index]"
+      @loaded="handleLoad"
+      @delete="deleteImage"
+    />
   </div>
 </template>
 
 <script setup>
-// Data
+import Card from "~/components/card.vue";
+
 const imgs = ref([]);
 const loading = ref([]);
-// API calls with useAsyncData
+
 const { data: dataobjs } = await useAsyncData("photos", () =>
   $fetch("https://dog.ceo/api/breeds/image/random/50")
 );
 
-// Methods
 const handleLoad = (index) => {
-  if (loading.value[index] !== undefined) {
-    loading.value[index] = false;
-  }
+  loading.value[index] = false;
 };
 
 const deleteImage = (index) => {
-  console.log(`Eliminando imagen en el índice ${index}`);
+  console.log("Image deleted llegue:", index);
   dataobjs.value.message.splice(index, 1);
   loading.value.splice(index, 1);
-  console.log(
-    `Imagen eliminada. Quedan ${dataobjs.value.message.length} imágenes.`
-  );
 };
-// Watchers
+
 watch(
   () => dataobjs.value?.message,
   (newVal) => {
